@@ -1,0 +1,465 @@
+@import url('https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Manrope:wght@400;500;600;700;800&display=swap');
+@import "tailwindcss";
+
+@theme {
+  --font-sans: 'Manrope', ui-sans-serif, system-ui, sans-serif;
+  --font-mono: 'DM Mono', ui-monospace, monospace;
+
+  /* Amana theme v2: modern fintech energy — deep indigo ink on a soft lavender-tinted
+     paper, with an electric violet→cyan brand gradient, money-green for growth, and a
+     warm coral accent for the Family & Remittances "home" feature. Livelier and bolder
+     than a typical budgeting app, while staying calm enough to read numbers in daily use. */
+  --color-ink: #202334;
+  --color-ink-soft: #62677d;
+  --color-paper: #ffffff;
+  --color-cloud: #f6f7fb;
+  --color-cloud-dim: #e9ecf5;
+  --color-line: #e2e5ee;
+  --color-mute: #9198aa;
+
+  /* Brand — violet/indigo, the app's new primary identity */
+  --color-brand: #5b4ae5;
+  --color-brand-deep: #3730a3;
+  --color-brand-bright: #7c6df2;
+  --color-brand-soft: #e9e7ff;
+  --color-brand-softer: #f4f3ff;
+
+  /* Emerald stays for "money / trust / growth" but brighter */
+  --color-emerald: #0ea975;
+  --color-emerald-deep: #05704a;
+  --color-emerald-soft: #d7f5e8;
+  --color-emerald-softer: #eefcf5;
+
+  /* Clay → warm coral, for Family & Remittances ("home") */
+  --color-clay: #f2724a;
+  --color-clay-deep: #c2410c;
+  --color-clay-soft: #ffe3d5;
+  --color-clay-softer: #fff3ec;
+
+  --color-green: #16a34a;
+  --color-green-soft: #dcfce7;
+  --color-red: #e5484d;
+  --color-red-soft: #fde4e4;
+
+  --color-gold: #d69e18;
+  --color-gold-soft: #fbf0d6;
+
+  --animate-fade-up: fade-up 0.5s cubic-bezier(0.16, 1, 0.3, 1) both;
+  --animate-pop: pop 0.35s cubic-bezier(0.34, 1.56, 0.64, 1) both;
+  --animate-shimmer: shimmer 1.6s ease-in-out infinite;
+  --animate-float: float 3.4s ease-in-out infinite;
+}
+
+html, body, #root {
+  height: 100%;
+}
+
+body {
+  background: var(--color-cloud);
+  background-image:
+    radial-gradient(800px circle at -10% -15%, color-mix(in srgb, var(--color-brand) 13%, transparent), transparent 58%),
+    radial-gradient(700px circle at 110% 5%, color-mix(in srgb, var(--color-emerald) 9%, transparent), transparent 56%),
+    linear-gradient(135deg, transparent 0%, color-mix(in srgb, var(--color-paper) 55%, transparent) 100%);
+  background-attachment: fixed;
+  color: var(--color-ink);
+  font-family: var(--font-sans);
+  -webkit-font-smoothing: antialiased;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+::selection {
+  background: var(--color-brand-soft);
+  color: var(--color-ink);
+}
+
+.font-num {
+  font-family: var(--font-mono);
+  font-variant-numeric: tabular-nums;
+}
+
+:focus-visible {
+  outline: 2px solid var(--color-brand);
+  outline-offset: 2px;
+}
+
+/* ---------- brand gradients, reusable — driven by CSS vars so theme switches cascade ---------- */
+.gradient-brand {
+  background-image: linear-gradient(135deg, var(--color-brand-bright) 0%, var(--color-brand) 55%, var(--color-brand-deep) 100%);
+}
+.gradient-money {
+  background-image: linear-gradient(135deg, var(--color-emerald) 0%, var(--color-emerald-deep) 100%);
+}
+.gradient-warm {
+  background-image: linear-gradient(135deg, var(--color-clay) 0%, var(--color-clay-deep) 100%);
+}
+.text-gradient-brand {
+  background-image: linear-gradient(135deg, var(--color-brand-bright), var(--color-brand) 60%, var(--color-brand-deep));
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+/* =====================================================================================
+   Theme presets. The default palette lives in @theme above; each preset here overrides
+   just the tokens that change, scoped to [data-theme] on <html> so specificity beats the
+   base :root declarations without !important. Every utility class (bg-brand, text-brand,
+   gradient-brand, etc.) reads these same variables, so picking a theme re-skins the whole
+   app instantly with no per-component changes needed.
+   ===================================================================================== */
+
+html[data-theme='ocean'] {
+  --color-brand: #0e7490;
+  --color-brand-deep: #164e63;
+  --color-brand-bright: #22d3ee;
+  --color-brand-soft: #cffafe;
+  --color-brand-softer: #ecfeff;
+  --color-clay: #f59e0b;
+  --color-clay-deep: #b45309;
+  --color-clay-soft: #fef3c7;
+  --color-clay-softer: #fffbeb;
+}
+
+html[data-theme='sunset'] {
+  --color-brand: #e11d48;
+  --color-brand-deep: #9f1239;
+  --color-brand-bright: #fb7185;
+  --color-brand-soft: #ffe4e6;
+  --color-brand-softer: #fff1f2;
+  --color-clay: #f59e0b;
+  --color-clay-deep: #b45309;
+  --color-clay-soft: #fef3c7;
+  --color-clay-softer: #fffbeb;
+}
+
+html[data-theme='forest'] {
+  --color-brand: #15803d;
+  --color-brand-deep: #14532d;
+  --color-brand-bright: #4ade80;
+  --color-brand-soft: #dcfce7;
+  --color-brand-softer: #f0fdf4;
+  --color-emerald: #0d9488;
+  --color-emerald-deep: #115e59;
+  --color-emerald-soft: #ccfbf1;
+  --color-emerald-softer: #f0fdfa;
+  --color-clay: #d97706;
+  --color-clay-deep: #92400e;
+  --color-clay-soft: #fef3c7;
+  --color-clay-softer: #fffbeb;
+}
+
+html[data-theme='rose'] {
+  --color-brand: #be185d;
+  --color-brand-deep: #831843;
+  --color-brand-bright: #f472b6;
+  --color-brand-soft: #fce7f3;
+  --color-brand-softer: #fdf2f8;
+  --color-clay: #f97316;
+  --color-clay-deep: #c2410c;
+  --color-clay-soft: #ffedd5;
+  --color-clay-softer: #fff7ed;
+}
+
+html[data-theme='midnight'] {
+  --color-ink: #f1eefc;
+  --color-ink-soft: #b8b2d6;
+  --color-paper: #1c1934;
+  --color-cloud: #131226;
+  --color-cloud-dim: #241f45;
+  --color-line: #332c5c;
+  --color-mute: #8a83b3;
+  --color-brand: #8b5cf6;
+  --color-brand-deep: #6d28d9;
+  --color-brand-bright: #a78bfa;
+  --color-brand-soft: #2f2657;
+  --color-brand-softer: #241f45;
+  --color-emerald: #10b981;
+  --color-emerald-deep: #34d399;
+  --color-emerald-soft: #0f3d31;
+  --color-emerald-softer: #16332b;
+  --color-clay: #fb923c;
+  --color-clay-deep: #fdba74;
+  --color-clay-soft: #3a2412;
+  --color-clay-softer: #2c1c10;
+  --color-red: #f87171;
+  --color-red-soft: #3f1d1d;
+  --color-green: #4ade80;
+  --color-green-soft: #163524;
+}
+html[data-theme='sand'] {
+  --color-brand: #b45309;
+  --color-brand-deep: #78350f;
+  --color-brand-bright: #f59e0b;
+  --color-brand-soft: #fef3c7;
+  --color-brand-softer: #fffbeb;
+  --color-emerald: #4d7c0f;
+  --color-emerald-deep: #3f6212;
+  --color-emerald-soft: #ecfccb;
+  --color-emerald-softer: #f7fee7;
+  --color-clay: #c2410c;
+  --color-clay-deep: #9a3412;
+  --color-clay-soft: #ffedd5;
+  --color-clay-softer: #fff7ed;
+}
+
+html[data-theme='berry'] {
+  --color-brand: #a21caf;
+  --color-brand-deep: #701a75;
+  --color-brand-bright: #e879f9;
+  --color-brand-soft: #fae8ff;
+  --color-brand-softer: #fdf4ff;
+  --color-clay: #6d28d9;
+  --color-clay-deep: #4c1d95;
+  --color-clay-soft: #ede9fe;
+  --color-clay-softer: #f5f3ff;
+}
+
+html[data-theme='midnight'] .skeleton {
+  background: linear-gradient(90deg, var(--color-cloud-dim) 25%, var(--color-line) 37%, var(--color-cloud-dim) 63%);
+  background-size: 400% 100%;
+}
+
+/* =====================================================================================
+   Appearance mode (light / dark / follow device) — layered ON TOP of whichever color
+   theme is active, via [data-mode] on <html>. This is deliberately independent of the
+   8 [data-theme] presets above: any palette (Ocean, Rose, Sand, ...) can be viewed in
+   either mode, not just the dedicated "Midnight" palette. These rules are placed after
+   every [data-theme] block so they win on equal specificity regardless of which theme is
+   selected — including forcing Midnight back to a light base when the user explicitly
+   picks Light mode while keeping that theme's violet brand hue.
+   color-mix() derives dark-appropriate "soft"/"softer" badge tints straight from each
+   theme's own brand/emerald/clay hue, so new themes get correct dark-mode tints for free
+   without needing a hand-tuned dark variant per palette.
+   ===================================================================================== */
+html[data-mode='dark'] {
+  /* Tells the browser to use its native dark-mode rendering for controls we don't fully
+     re-skin ourselves — select dropdowns, date/number pickers, checkboxes, scrollbars on
+     browsers scroll-thin doesn't cover. Without this the OS/browser defaults to light
+     controls no matter what the app's own palette is doing, which reads as broken. */
+  color-scheme: dark;
+  --color-ink: #f1eefc;
+  --color-ink-soft: #b8b2d6;
+  --color-paper: #1c1934;
+  --color-cloud: #131226;
+  --color-cloud-dim: #241f45;
+  --color-line: #332c5c;
+  --color-mute: #8a83b3;
+
+  --color-brand-soft: color-mix(in srgb, var(--color-brand) 24%, #131226);
+  --color-brand-softer: color-mix(in srgb, var(--color-brand) 14%, #131226);
+  --color-emerald-soft: color-mix(in srgb, var(--color-emerald) 24%, #131226);
+  --color-emerald-softer: color-mix(in srgb, var(--color-emerald) 14%, #131226);
+  --color-clay-soft: color-mix(in srgb, var(--color-clay) 24%, #131226);
+  --color-clay-softer: color-mix(in srgb, var(--color-clay) 14%, #131226);
+  --color-red-soft: color-mix(in srgb, var(--color-red) 22%, #131226);
+  --color-green-soft: color-mix(in srgb, var(--color-green) 22%, #131226);
+  --color-gold-soft: color-mix(in srgb, var(--color-gold) 22%, #131226);
+}
+html[data-mode='dark'] .skeleton {
+  background: linear-gradient(90deg, var(--color-cloud-dim) 25%, var(--color-line) 37%, var(--color-cloud-dim) 63%);
+  background-size: 400% 100%;
+}
+
+html[data-mode='light'] {
+  color-scheme: light;
+  --color-ink: #171332;
+  --color-ink-soft: #57517a;
+  --color-paper: #ffffff;
+  --color-cloud: #f6f4fd;
+  --color-cloud-dim: #ece7fb;
+  --color-line: #e3ddf7;
+  --color-mute: #8e87ac;
+
+  --color-brand-soft: color-mix(in srgb, var(--color-brand) 12%, #ffffff);
+  --color-brand-softer: color-mix(in srgb, var(--color-brand) 6%, #ffffff);
+  --color-emerald-soft: color-mix(in srgb, var(--color-emerald) 14%, #ffffff);
+  --color-emerald-softer: color-mix(in srgb, var(--color-emerald) 7%, #ffffff);
+  --color-clay-soft: color-mix(in srgb, var(--color-clay) 14%, #ffffff);
+  --color-clay-softer: color-mix(in srgb, var(--color-clay) 7%, #ffffff);
+  --color-red-soft: #fde4e4;
+  --color-green-soft: #dcfce7;
+  --color-gold-soft: #fbf0d6;
+}
+
+/* ---------- lively surfaces ---------- */
+.card-lift {
+  box-shadow: 0 1px 2px rgba(26, 31, 54, 0.02), 0 10px 28px -20px rgba(32, 35, 52, 0.22);
+  transition: transform 0.18s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.18s ease, border-color 0.18s ease;
+}
+.card-lift:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 16px 30px -18px color-mix(in srgb, var(--color-brand) 26%, transparent);
+  border-color: var(--color-brand-bright);
+}
+
+/* Shell and account surfaces share a calmer editorial rhythm: generous spacing,
+   precise borders, and color reserved for actions and useful signals. */
+.app-sidebar {
+  background: color-mix(in srgb, var(--color-paper) 92%, transparent);
+  backdrop-filter: blur(18px);
+}
+.app-sidebar nav button[aria-current='page'] { font-weight: 700; }
+.page-header {
+  padding-bottom: 1.25rem;
+  border-bottom: 1px solid color-mix(in srgb, var(--color-line) 80%, transparent);
+}
+.page-header h1 {
+  letter-spacing: -0.045em;
+  font-weight: 800;
+}
+.settings-hero {
+  position: relative;
+  overflow: hidden;
+  box-shadow: 0 18px 45px -32px color-mix(in srgb, var(--color-brand) 40%, transparent);
+}
+.settings-hero::after {
+  content: '';
+  position: absolute;
+  width: 11rem;
+  height: 11rem;
+  border-radius: 999px;
+  top: -7rem;
+  right: -3rem;
+  background: color-mix(in srgb, var(--color-brand) 10%, transparent);
+  pointer-events: none;
+}
+.settings-hero > * { position: relative; z-index: 1; }
+
+/* Small screens are a first-class layout, not a shrunken desktop: forms stack, summary
+   cards become full-width, and data rows preserve their important values without clipping. */
+@media (max-width: 640px) {
+  .app-shell main {
+    padding: 1rem;
+    padding-bottom: 4rem;
+  }
+  .page-header {
+    margin-bottom: 1.25rem;
+    padding-bottom: 1rem;
+  }
+  .page-header h1 { font-size: 1.6rem; }
+  .page-header > div:last-child { width: 100%; justify-content: space-between; }
+  .page-header > div:last-child > .card-lift { min-width: 0; flex: 1; }
+  .responsive-form {
+    display: grid !important;
+    grid-template-columns: minmax(0, 1fr);
+    align-items: stretch;
+  }
+  .responsive-form > * { width: 100%; }
+  .responsive-form input,
+  .responsive-form select { width: 100% !important; }
+  .responsive-form button { justify-self: stretch; }
+  .settings-hero { padding: 1.25rem; }
+  .transaction-grid {
+    grid-template-columns: 4.25rem minmax(0, 1fr) auto !important;
+    gap: .5rem .75rem;
+  }
+  .transaction-grid > :nth-child(3) { display: none !important; }
+  .transaction-grid > :nth-child(4) { grid-column: 3; }
+  .transaction-grid > :nth-child(5) {
+    grid-column: 2 / -1;
+    justify-self: end;
+  }
+  .transaction-header > :last-child { display: none; }
+}
+
+.glow-ring {
+  box-shadow: 0 0 0 3px var(--color-brand-soft);
+}
+
+/* Thin, on-brand scrollbar for internally-scrolling panels (sidebar nav, notification
+   panel, modals) — the default OS scrollbar looks out of place against these rounded,
+   pastel surfaces and gives no visual cue that a panel scrolls until you're already
+   dragging it. Firefox + WebKit only; other browsers fall back to their native bar. */
+.scroll-thin {
+  scrollbar-width: thin;
+  scrollbar-color: var(--color-line) transparent;
+}
+.scroll-thin::-webkit-scrollbar {
+  width: 6px;
+}
+.scroll-thin::-webkit-scrollbar-track {
+  background: transparent;
+}
+.scroll-thin::-webkit-scrollbar-thumb {
+  background-color: var(--color-line);
+  border-radius: 999px;
+}
+.scroll-thin::-webkit-scrollbar-thumb:hover {
+  background-color: var(--color-mute);
+}
+
+.skeleton {
+  background: linear-gradient(90deg, var(--color-cloud-dim) 25%, var(--color-line) 37%, var(--color-cloud-dim) 63%);
+  background-size: 400% 100%;
+  animation: var(--animate-shimmer);
+}
+
+/* ---------- keyframes ---------- */
+@keyframes fade-up {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+@keyframes pop {
+  0% { opacity: 0; transform: scale(0.85); }
+  60% { opacity: 1; transform: scale(1.04); }
+  100% { opacity: 1; transform: scale(1); }
+}
+@keyframes shimmer {
+  0% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+@keyframes float {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-5px); }
+}
+@keyframes confetti-fall {
+  0% { transform: translateY(0) rotate(0deg); opacity: 1; }
+  100% { transform: translateY(220px) rotate(540deg); opacity: 0; }
+}
+@keyframes toast-in {
+  from { opacity: 0; transform: translateY(-8px) scale(0.97); }
+  to { opacity: 1; transform: translateY(0) scale(1); }
+}
+.animate-fade-up { animation: var(--animate-fade-up); }
+.animate-pop { animation: var(--animate-pop); }
+.animate-toast-in { animation: toast-in 0.25s cubic-bezier(0.16, 1, 0.3, 1) both; }
+.animate-confetti { animation: confetti-fall 1.6s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards; }
+
+/* ---------- splash screen ---------- */
+@keyframes splash-mascot-in {
+  0% { opacity: 0; transform: scale(0.4) translateY(30px); }
+  55% { opacity: 1; transform: scale(1.08) translateY(-6px); }
+  75% { transform: scale(0.96) translateY(2px); }
+  100% { opacity: 1; transform: scale(1) translateY(0); }
+}
+@keyframes splash-wink {
+  0%, 40%, 100% { transform: scaleY(1); }
+  46%, 54% { transform: scaleY(0.1); }
+}
+@keyframes splash-coin-orbit {
+  0% { transform: rotate(0deg) translateX(46px) rotate(0deg); opacity: 0; }
+  15% { opacity: 1; }
+  100% { transform: rotate(360deg) translateX(46px) rotate(-360deg); opacity: 1; }
+}
+@keyframes splash-text-in {
+  0% { opacity: 0; transform: translateY(8px); }
+  100% { opacity: 1; transform: translateY(0); }
+}
+@keyframes splash-fade-out {
+  0% { opacity: 1; }
+  100% { opacity: 0; }
+}
+.animate-splash-mascot { animation: splash-mascot-in 0.7s cubic-bezier(0.34, 1.56, 0.64, 1) both; }
+.animate-splash-wink { animation: splash-wink 2.6s ease-in-out 0.9s 1; transform-origin: center; }
+.animate-splash-coin { animation: splash-coin-orbit 3.2s linear infinite; }
+.animate-splash-text { animation: splash-text-in 0.5s cubic-bezier(0.16, 1, 0.3, 1) 0.35s both; }
+.animate-splash-exit { animation: splash-fade-out 0.35s ease-in both; }
+
+@media (prefers-reduced-motion: reduce) {
+  * {
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.01ms !important;
+  }
+}
